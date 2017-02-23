@@ -5,7 +5,7 @@ A Matlab GUI that simplifies generating ground truth from videos or lists of ima
 ## Dependencies:
  - Matlab >= r2015a
 
-![alt tag](https://drive.google.com/open?id=0BzcGDsPY_8c-M3FHdm1iazczOTQ)
+![alt tag](https://lh5.googleusercontent.com/ZQKoQbdBCCAlZxImFaxzo3DeAGe9xkIN5epDiJCc1lYZFD9mnofBkXtMZFcALX8A1grwWArMRVROAHU=w1316-h921-rw)
 
 
 ## Installation
