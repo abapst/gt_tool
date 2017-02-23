@@ -5,7 +5,7 @@ A Matlab GUI for easily generating ground truth from videos or lists of images. 
 ## Installation
 
 <pre>
-git clone git@gitlab.sandia.gov:abapst/gt_tool.git
+git clone https://github.com/abapst/gt_tool.git
 cd gt_tool
 </pre>
 

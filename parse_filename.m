@@ -37,6 +37,12 @@ elseif strcmp(ext,'.txt')
 % loading a previous project into workspace
 elseif strcmp(ext,'.mat')
     load(guiObject.mediafile);
+    [~,~,ext] = fileparts(project.filenames{1});
+    
+    % refresh the videoreader object if loaded project is a video
+    if strcmp(ext,'.mp4') || strcmp(ext,'.mp4')
+        project.videoreader = VideoReader([project.path,'\',project.filenames{1}]);
+    end
 end
 
 end

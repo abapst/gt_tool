@@ -8,6 +8,12 @@ function gt_savequery(varargin)
     buttonH = figW/6;
     figH = 2*buttonH;
     
+    if screen(3) > 1920
+        fontsize_text = 12;
+    else
+        fontsize_text = 10;
+    end
+    
     guiObject = varargin{1};
     
     % Create and then hide the UI as it is being constructed
@@ -20,7 +26,7 @@ function gt_savequery(varargin)
     htext = uicontrol('Style','text',...
              'String','Save current project before continuing?',...
              'Position',[0,figH-buttonH,figW,buttonH],...
-             'FontSize',12);
+             'FontSize',fontsize_text);
     hyes = uicontrol('Style','pushbutton','String','Yes',...
             'Position',[0,figH-2*buttonH,figW/3,buttonH],'FontSize',16,...
             'Callback',{@yes_Callback});

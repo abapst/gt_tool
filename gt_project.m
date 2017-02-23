@@ -3,14 +3,14 @@ function gt_project(varargin)
     set(0,'units','pixels');
     screen = get(0,'screensize');
     sidebarW = screen(3)/10;
-    figX = screen(3)/10;
+    figX = screen(3)/20;
     figY = figX;
     buttonH = sidebarW/6;
     figH = 17*buttonH;
-    maxImW = 1920;
-    maxImH = 1080;
     barHeight = 20;
     
+    global imH;
+    global imW;
     global IS_BUTTON_DOWN;
     global RECT_START_COORD;
     global RECT_END_COORD;
@@ -24,6 +24,13 @@ function gt_project(varargin)
     global gtdata;
     global LABELCHOICE;
     LABELCHOICE = 0;
+    
+    global fontsize_infotext;
+    if screen(3) > 1920
+        fontsize_infotext = 11;
+    else
+        fontsize_infotext = 8;
+    end
     
     global ADJUST; % fine adjustment step size for boxes 
     ADJUST = 2;
@@ -117,7 +124,7 @@ function gt_project(varargin)
                        '  w,a,s,d: move box edges inwards',...
                        '',...
                        '  W,A,S,D: move box edges outwards'},...
-             'FontSize',11,...
+             'FontSize',fontsize_infotext,...
              'Position',[0,figH-7*buttonH,sidebarW,7*buttonH]);
     
     % keypress function
@@ -248,8 +255,8 @@ function gt_project(varargin)
         elseif strcmp(eventData.Key,'control')
             if ~LABELCHOICE
                 LABELCHOICE = 1;
-                curr_rect = get(RECT_HANDLES(SELECTED_BOX).handle,'Position');
-                set(hlabels,'Position',[curr_rect(1)+sidebarW,(axH+2*barHeight)-curr_rect(2),150,0]);
+                pos = get(RECT_HANDLES(SELECTED_BOX).handle,'Position');
+                set(hlabels,'Position',[(axW/imW)*pos(1)+sidebarW,(axH+2*barHeight)-(axH/imH)*pos(2),130,0]);
                 if ~isempty(BOXES(SELECTED_BOX).label)
                     set(hlabels,'Value',find(strcmp(guiObject.project.labels,BOXES(SELECTED_BOX).label)));
                 end
@@ -259,10 +266,10 @@ function gt_project(varargin)
                 uicontrol(hlabels);
             else
                 LABELCHOICE = 0;
-                curr_label = guiObject.project.labels(CURRENT_LABEL);
+                label = guiObject.project.labels(CURRENT_LABEL);
                 set(hlabels,'Value',CURRENT_LABEL);
-                BOXES(SELECTED_BOX).label = curr_label;
-                set(RECT_HANDLES(SELECTED_BOX).label,'String',curr_label);
+                BOXES(SELECTED_BOX).label = label;
+                set(RECT_HANDLES(SELECTED_BOX).label,'String',label);
                 set(hlabels,'Visible','off');
                 set(hlabels,'enable','off');
                 set(RECT_HANDLES(SELECTED_BOX).label,'Visible','on');
@@ -295,18 +302,22 @@ function gt_project(varargin)
         end
     end
     
-    function redraw_gui(im)  
-        axH = min(size(im,1),maxImH); % size of axes to accomodate image
-        axW = min(size(im,2),maxImW);
+    function redraw_gui(im)
+        imH = size(im,1);
+        imW = size(im,2);
+        axH = min(imH,0.8*screen(4)); % size of axes to accomodate image
+        axW = min(imW,0.8*screen(3));
         currH = max(axH+barHeight,figH);
         set(guiObject.fProject,'Position',[figX,figY,sidebarW+axW,currH]);
         set(himg,'Position',[sidebarW,barHeight,axW,axH]);
         set(hbar,'Position',[sidebarW,0,axW,barHeight],...
                  'XLim',[1,axW],'YLim',[1,barHeight]);
-        
         % draw rectangle on bottom bar
-        rectangle(hbar,'Position',[0,0,axW,barHeight],...
-                       'EdgeColor','b','FaceColor','b');
+        rectangle(...
+            'Parent',hbar,...
+            'Position',[0,0,axW,barHeight],...
+            'EdgeColor','b',...
+            'FaceColor','b');
         set(hlogo,'Position',[0,currH-2*buttonH,sidebarW,2*buttonH]);
         set(hnewp,'Position',[0,currH-3*buttonH,sidebarW,buttonH]);
         set(hsavep,'Position',[0,currH-4*buttonH,sidebarW,buttonH]);
@@ -396,11 +407,13 @@ function gt_project(varargin)
                  if w>0 && h>0
                      if isempty(CURRENT_RECT)
                          CURRENT_RECT = rectangle(...
+                             'Parent',himg,...
                              'Position',[x,y,w,h],...
                              'EdgeColor','y',...
                              'LineStyle','--');
                      else
                          set(CURRENT_RECT,...
+                             'Parent',himg,...
                              'Position',[x,y,w,h],...
                              'LineWidth',1,...
                              'EdgeColor','y',...
@@ -439,7 +452,7 @@ function gt_project(varargin)
                 'ForegroundColor','k',...
                 'HorizontalAlignment','left',...
                 'FontSize',12,...
-                'Position',[pos(1)+sidebarW-1,(axH+barHeight)-pos(2),150,20],...
+                'Position',[(axW/imW)*pos(1)+sidebarW-1,(axH+barHeight)-(axH/imH)*pos(2),120,20],...
                 'String','',...
                 'Visible','off');
         else
@@ -453,7 +466,7 @@ function gt_project(varargin)
                 'ForegroundColor','k',...
                 'HorizontalAlignment','left',...
                 'FontSize',12,...
-                'Position',[pos(1)+sidebarW-1,(axH+barHeight)-pos(2),150,20],...
+                'Position',[(axW/imW)*pos(1)+sidebarW-1,(axH+barHeight)-(axH/imH)*pos(2),120,20],...
                 'String','',...
                 'Visible','off');
         end
@@ -463,7 +476,7 @@ function gt_project(varargin)
         set(guiObject.fProject,'Name','Ground Truth Tool 1.0 (UNSAVED CHANGES)'); 
     end
 
-    % MOUSE UP
+    % MOUSE DOWN
     function MouseDownImg(~,~)
         IS_BUTTON_DOWN = true;
         % get top left corner of rectangle
@@ -575,7 +588,7 @@ function gt_project(varargin)
                 pos = BOXES(ii).pos;
                 label = BOXES(ii).label;
                 RECT_HANDLES(ii).handle = rectangle(...
-                    himg,...
+                    'Parent',himg,...
                     'Position',pos,...
                     'LineWidth',2,...
                     'EdgeColor','r');
@@ -585,7 +598,7 @@ function gt_project(varargin)
                      'ForegroundColor','k',...
                      'HorizontalAlignment','left',...
                      'FontSize',12,...
-                     'Position',[pos(1)+sidebarW-1,(axH+barHeight)-pos(2),150,20],...
+                     'Position',[(axW/imW)*pos(1)+sidebarW-1,(axH+barHeight)-(axH/imH)*pos(2),120,20],...
                      'String','',...
                      'Visible','off');
                 if ~isempty(label)
