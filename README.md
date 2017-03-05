@@ -2,7 +2,7 @@
 
 A Matlab GUI that simplifies generating ground truth from videos or lists of images. The interface is designed to reduce misery as much as possible and increase throughput. You use the mouse to place rough boxes around objects of interest, then use the keyboard to browse frames and cycle through boxes, finetune box boundaries, and add labels. Inputs can be either videos, images, or a .txt file containing a list of images.
 
-![alt tag](https://lh5.googleusercontent.com/6jXeZckgqtYZ2ZQXFtLdPGWJln96iPV9rZjOUlGTnygNsVijR6ZcdF_hQsZuq4X8MJGvKQqWdrWwcJM=w1316-h921-rw)
+![alt tag](https://googledrive.com/host/0BzcGDsPY_8c-VF9PT1RnMVdPeUE/gt_tool.png)
 
 ## Dependencies
  - Matlab >= r2015a
